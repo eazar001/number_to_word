@@ -2,9 +2,8 @@
 
 This is a utility pack for converting integers to their English word
 representations. This was one cool feature that came built in to the
-Common Lisp implementation. This pack is to bring that functionality
-to SWI Prolog.
-
+Common Lisp implementation. This pack brings this functionality and
+other related ones to SWI Prolog.
 
 # Example usage
 
