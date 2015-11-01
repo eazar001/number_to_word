@@ -1,6 +1,7 @@
 
 :- module(number_to_word,
-     [ number_word/2 ]).
+     [ number_word/2
+      ,between_words/3 ]).
 
 
 :- use_module(groups).
@@ -15,6 +16,16 @@ Small utility pack for converting integers to English words.
 @tbd Add between/3 for number_word/2
 */
 
+
+%% between_words(+Low, +High, ?Word)
+%
+%  True if Word is an English word representing numbers between the range of
+%  Low and High. This is a convenience predicate that behaves as the SWI builtin
+%  predicate between/3 does.
+
+between_words(Low, High, Word) :-
+  between(Low, High, N),
+  number_word(N, Word).
 
 %% number_word(+Number:integer, -Word:string)
 %
