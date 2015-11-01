@@ -1,22 +1,26 @@
 
 :- module(number_to_word,
-     [ format_word/2 ]).
+     [ number_word/2 ]).
+
 
 :- use_module(groups).
 
 
-format_word(Number, Word) :-
+%% number_word(+Number:integer, -Word:string)
+%
+%  True if Word is an English word representation of Number.
+number_word(Number, Word) :-
   apply_suffix(Number, Digits), !,
   (  Digits = [[]]
   -> Word = "zero"
-  ;  format_word_(Digits, Words0),
+  ;  number_word_(Digits, Words0),
      reverse(Words0, Words1),
      foldl(atomic_concat, Words1, '', Atom),
      atom_string(Atom, Word)
   ).
 
-format_word_([], []).
-format_word_([List|Rest], [Word|Words]) :-
+number_word_([], []).
+number_word_([List|Rest], [Word|Words]) :-
   (  List = L-S
   -> atomic_list_concat(L, ' ', L0),
      (  Rest == [[]]
@@ -25,7 +29,7 @@ format_word_([List|Rest], [Word|Words]) :-
      )
   ;  atomic_list_concat(List, ' ', Word)
   ),
-  format_word_(Rest, Words).
+  number_word_(Rest, Words).
 
 
 apply_suffix(Number, Word) :-
