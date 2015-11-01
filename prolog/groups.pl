@@ -22,7 +22,7 @@ group([Word]) -->
   Sequence,
   { unit(A, Word) }.
 
-% double digit handling
+% Double digit handling
 group([ten]) --> [1,0].
 group([ten]) --> [0,1,0].
 group([W0,W1]) -->
@@ -46,7 +46,7 @@ group([Word]) -->
     ten(N, Word)
   }.
 
-% triple digit handling
+% Triple digit handling
 group(Word) -->
   [A,B,C],
   { A #> 0,
@@ -57,7 +57,7 @@ group(Word) -->
   }.
 
 
-% single digit numbers
+% Single digit numbers
 unit(0, zero).
 unit(1, one).
 unit(2, two).
@@ -69,7 +69,7 @@ unit(7, seven).
 unit(8, eight).
 unit(9, nine).
 
-% larger numbers
+% Larger numbers
 ten(11, eleven).
 ten(12, twelve).
 ten(13, thirteen).
@@ -88,7 +88,7 @@ ten(70, seventy).
 ten(80, eighty).
 ten(90, ninety).
 
-
+% Everything after
 beyond(10^3, thousand).
 beyond(10^6, million).
 beyond(10^9, billion).
@@ -110,5 +110,4 @@ beyond(10^54, septendecillion).
 beyond(10^57, octodecillion).
 beyond(10^60, novemdecillion).
 beyond(10^63, vigintillion).
-
 

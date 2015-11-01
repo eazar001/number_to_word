@@ -5,10 +5,33 @@
 
 :- use_module(groups).
 
+/** <module> number_to_word
+Small utility pack for converting integers to English words.
+
+@author  Ebrahim Azarisooreh
+@license MIT
+
+@tbd Add "nth" endings as a variation to the English representations
+@tbd Add between/3 for number_word/2
+*/
+
 
 %% number_word(+Number:integer, -Word:string)
 %
-%  True if Word is an English word representation of Number.
+%  True if Word is an English word representation of Number. Number must be
+%  ground on entry.
+%
+%  Some examples:
+%  ==
+%  ?- number_word(1024, Word).
+%  Word = "one thousand, twenty four".
+%
+%  ?- number_word(2048, "two thousand, forty eight").
+%  true.
+%  ==
+%
+%  @throws instantiation_error If Number is not ground
+
 number_word(Number, Word) :-
   apply_suffix(Number, Digits), !,
   (  Digits = [[]]
@@ -32,6 +55,13 @@ number_word_([List|Rest], [Word|Words]) :-
   number_word_(Rest, Words).
 
 
+%% apply_suffix(+Number, -Digits)
+%
+%  True if Digits is a list of list-length pairs where each list contains a group
+%  of subwords which when combined with the subwords from the other lists, will
+%  form a whole word that represents Number. Each integer length in the pair
+%  represents the length of the corresponding sublist.
+
 apply_suffix(Number, Word) :-
   number_digits(Number, Digits-Len),
   apply_suffix_(Digits, Word0, Len),
@@ -53,9 +83,9 @@ apply_phrase(List, Word) :-
   phrase(group(Word), List).
 
 
-%% number_digits(+Num, -Digits)
+%% number_digits(+Num:integer, -Digits:list(integer))
 %
-%  Digits is a list of digits that represents an integer Num. Digits is divided
+%  Digits is a list of integers that represents an integer Num. Digits is divided
 %  into groups of 3. Digits will unify with a list of digits paired to its own
 %  length.
 
