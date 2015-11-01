@@ -19,7 +19,10 @@ format_word_([], []).
 format_word_([List|Rest], [Word|Words]) :-
   (  List = L-S
   -> atomic_list_concat(L, ' ', L0),
-     format(atom(Word), "~a ~a, ", [L0, S])
+     (  Rest == [[]]
+     -> format(atom(Word), "~a ~a", [L0, S])
+     ;  format(atom(Word), "~a ~a, ", [L0, S])
+     )
   ;  atomic_list_concat(List, ' ', Word)
   ),
   format_word_(Rest, Words).
