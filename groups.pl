@@ -1,8 +1,9 @@
 
-:- module(groups, [ group//1
-		   ,unit/2
-		   ,ten/2
-		   ,beyond/2 ]).
+:- module(groups,
+     [ group//1
+      ,unit/2
+      ,ten/2
+      ,beyond/2 ]).
 
 
 :- use_module(library(clpfd)).
@@ -11,6 +12,7 @@
 term_expansion(beyond(Goal, Word), Goal0) :-
   Num is Goal,
   Goal0 = beyond(Num, Word).
+
 
 group([Word]) -->
   { Sequence = [A]

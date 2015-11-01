@@ -3,11 +3,6 @@
      [ format_word/2 ]).
 
 :- use_module(groups).
-:- use_module(library(list_util)).
-:- use_module(library(clpfd)).
-
-
-% 0 is the same as [[]]
 
 
 format_word(Number, Word) :-
@@ -71,7 +66,7 @@ digits_triplets_([], [], L, L) :- !.
 digits_triplets_([A], [[AN]], L0, L) :- !,
   L is L0+3,
   atom_number(A, AN).
-  
+
 digits_triplets_([A,B], [[BN,AN]], L0, L) :- !,
   L is L0+3,
   maplist(atom_number, [A,B], [AN,BN]).
@@ -80,10 +75,4 @@ digits_triplets_([A,B,C|Rest], [[CN,BN,AN]|Triplets], L0, L) :-
   L1 is L0+3,
   maplist(atom_number, [A,B,C], [AN,BN,CN]),
   digits_triplets_(Rest, Triplets, L1, L).
-
-
-
-
-
-
 
