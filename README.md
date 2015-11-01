@@ -14,4 +14,9 @@ Word = "one thousand, twenty four".
 
 ?- number_word(2048, "two thousand, forty eight").
 true.
+
+?- between_words(5, 7, Word).
+Word = "five" ;
+Word = "six" ;
+Word = "seven".
 ```
