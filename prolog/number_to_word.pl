@@ -13,7 +13,6 @@ Small utility pack for converting integers to English words.
 @license MIT
 
 @tbd Add "nth" endings as a variation to the English representations
-@tbd Add between/3 for number_word/2
 */
 
 
