@@ -8,14 +8,21 @@ other related ones to SWI Prolog.
 # Example usage
 
 ```prolog
-?- number_word(1024, Word).
-Word = "one thousand, twenty four".
+?- number_word([5,5,2,0,1,2,0,0,6], Word).
+Word = [[five, hundred, fifty, two], million, [twelve], thousand, six]
 
-?- number_word(2048, "two thousand, forty eight").
-true.
+?- number_word([0,0,6], Word).
+Word = [six]
 
-?- between_words(5, 7, Word).
-Word = "five" ;
-Word = "six" ;
-Word = "seven".
+?- number_word(Number, [[one], thousand, three, hundred, seventy, two]).
+Number = [0, 0, 1, 3, 7, 2]
+
+?- number_word(Number, [[one], thousand, X, hundred, seventy, two]).
+Number = [0, 0, 1, 1, 7, 2],
+X = one ;
+Number = [0, 0, 1, 2, 7, 2],
+X = two ;
+Number = [0, 0, 1, 3, 7, 2],
+X = three ;
+... etc.
 ```

@@ -1,2 +1,7 @@
 name(number_to_word).
-version('0.0.1').
+title('Integer to English word conversions').
+version('0.3.0').
+author('Ebrahim Azarisooreh', 'ebrahim.azarisooreh@gmail.com').
+home('https://github.com/eazar001/number_to_word').
+keywords([numbers,words,integers]).
+download('https://github.com/eazar001/number_to_word/archive/v0.3.0.zip').

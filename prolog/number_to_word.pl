@@ -4,11 +4,16 @@
 
 :- initialization compile_predicates([gen//1]).
 
-:- use_module(library(clpfd)).
-:- use_module(library(dcg/basics)).
-
 :- dynamic gen//1.
 
+
+/** <module> number_to_word
+Small utility pack for converting integers to English words.
+
+@author  Ebrahim Azarisooreh
+@license MIT
+
+*/
 
 term_expansion(beyond(N, Word), Rule) :-
   succ(N0, N),
