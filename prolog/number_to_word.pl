@@ -1,125 +1,132 @@
 
 :- module(number_to_word,
-     [ number_word/2
-      ,between_words/3 ]).
+     [ gen//1 ]).
+
+:- initialization compile_predicates([gen//1]).
+
+:- use_module(library(clpfd)).
+:- use_module(library(dcg/basics)).
+
+:- dynamic gen//1.
 
 
-:- use_module(groups).
+term_expansion(beyond(N, Word), Rule) :-
+  dynamic(gen//1),
+  succ(N0, N),
+  atom_concat(x_, N, Name),
+  atom_concat(x_, N0, Name0),
+  Head =.. [Name, [W1,Word|W2]],
+  Prev =.. [Name0, W2],
+  Rule = ( Head --> x(W1), call(Prev) ),
+  Gen =.. [Name, A, B, C],
+  GenRule = ( gen(A,B,C) :- Gen ),
+  assertz(GenRule).
 
-/** <module> number_to_word
-Small utility pack for converting integers to English words.
-
-@author  Ebrahim Azarisooreh
-@license MIT
-
-@tbd Add "nth" endings as a variation to the English representations
-*/
 
 
-%% between_words(+Low, +High, ?Word)
-%
-%  True if Word is an English word representing numbers between the range of
-%  Low and High. This is a convenience predicate that behaves as the SWI builtin
-%  predicate between/3 does.
+gen(Ws) --> x(Ws).
+gen(Ws) --> x_2(Ws).
 
-between_words(Low, High, Word) :-
-  between(Low, High, N),
-  number_word(N, Word).
 
-%% number_word(+Number:integer, -Word:string)
-%
-%  True if Word is an English word representation of Number. Number must be
-%  ground on entry.
-%
-%  Some examples:
-%  ==
-%  ?- number_word(1024, Word).
-%  Word = "one thousand, twenty four".
-%
-%  ?- number_word(2048, "two thousand, forty eight").
-%  true.
-%  ==
-%
-%  @throws instantiation_error If Number is not ground
+x_2([W1,thousand|W2]) -->
+  x(W1),
+  x(W2).
 
-number_word(Number, Word) :-
-  apply_suffix(Number, Digits), !,
-  (  Digits = [[]]
-  -> Word = "zero"
-  ;  number_word_(Digits, Words0),
-     reverse(Words0, Words1),
-     foldl(atomic_concat, Words1, '', Atom),
-     atom_string(Atom, Word)
+
+x([Word]) -->
+  dig(zero),
+  dig(zero),
+  dig(Word).
+
+x([Word]) -->
+  dig(zero),
+  special(Word).
+
+x(Word) -->
+  dig(zero),
+  ten(W1),
+  dig(W2),
+  {  W2 == zero
+  -> Word = [W1]
+  ;  Word = [W1,W2]
+  }.
+
+x(Word) -->
+  dig(W1),
+  { W1 \== zero },
+  % Second digit is either single digit or special number
+  (  (  dig(zero),
+        dig(W2)
+     ;  special(W2)
+     ),
+     {  W2 == zero
+     -> Word = [W1,hundred]
+     ;  Word = [W1,hundred,W2]
+     }
+  ;  ten(W2),
+     dig(W3),
+     { W2 \== zero,
+       (  W3 == zero
+       -> Word = [W1,hundred,W2]
+       ;  Word = [W1,hundred,W2,W3]
+       )
+     }
   ).
 
-number_word_([], []).
-number_word_([List|Rest], [Word|Words]) :-
-  (  List = L-S
-  -> atomic_list_concat(L, ' ', L0),
-     (  Rest == [[]]
-     -> format(atom(Word), "~a ~a", [L0, S])
-     ;  format(atom(Word), "~a ~a, ", [L0, S])
-     )
-  ;  atomic_list_concat(List, ' ', Word)
-  ),
-  number_word_(Rest, Words).
+
+dig(zero) --> [0].
+dig(one) --> [1].
+dig(two) --> [2].
+dig(three) --> [3].
+dig(four) --> [4].
+dig(five) --> [5].
+dig(six) --> [6].
+dig(seven) --> [7].
+dig(eight) --> [8].
+dig(nine) --> [9].
 
 
-%% apply_suffix(+Number, -Digits)
-%
-%  True if Digits is a list of list-length pairs where each list contains a group
-%  of subwords which when combined with the subwords from the other lists, will
-%  form a whole word that represents Number. Each integer length in the pair
-%  represents the length of the corresponding sublist.
-
-apply_suffix(Number, Word) :-
-  number_digits(Number, Digits-Len),
-  apply_suffix_(Digits, Word0, Len),
-  exclude(=([]-_), Word0, Word).
-
-apply_suffix_([Last], [Word], _) :-
-  apply_phrase(Last, Word0),
-  exclude(=(zero), Word0, Word).
-
-apply_suffix_([G|Gs], [W-Suffix|Ws], N) :-
-  apply_phrase(G, W0),
-  exclude(=(zero), W0, W),
-  Index is 10^N,
-  beyond(Index, Suffix),
-  N0 is N-3,
-  apply_suffix_(Gs, Ws, N0).
-
-apply_phrase(List, Word) :-
-  phrase(group(Word), List).
+special(ten) --> [1,0].
+special(eleven) --> [1,1].
+special(twelve) --> [1,2].
+special(thirteen) --> [1,3].
+special(fourteen) --> [1,4].
+special(fifteen) --> [1,5].
+special(sixteen) --> [1,6].
+special(seventeen) --> [1,7].
+special(eighteen) --> [1,8].
+special(nineteen) --> [1,9].
 
 
-%% number_digits(+Num:integer, -Digits:list(integer))
-%
-%  Digits is a list of integers that represents an integer Num. Digits is divided
-%  into groups of 3. Digits will unify with a list of digits paired to its own
-%  length.
-
-number_digits(Num, Digits-Length) :-
-  number_chars(Num, Chars),
-  reverse(Chars, Rchars),
-  digits_triplets(Rchars, RDigits, Length),
-  reverse(RDigits, Digits).
+ten(twenty) --> [2].
+ten(thirty) --> [3].
+ten(forty) --> [4].
+ten(fifty) --> [5].
+ten(sixty) --> [6].
+ten(seventy) --> [7].
+ten(eighty) --> [8].
+ten(ninety) --> [9].
 
 
-digits_triplets(Chars, Digits, Length) :-
-  digits_triplets_(Chars, Digits, -3, Length).
+beyond(3, million).
+beyond(4, billion).
+beyond(5, trillion).
+beyond(6, quadrillion).
+beyond(7, quintillion).
+beyond(8, sextillion).
+beyond(9, septillion).
+beyond(10, octillion).
+beyond(11, nonillion).
+beyond(12, decillion).
+beyond(13, undecillion).
+beyond(14, duodecillion).
+beyond(15, tredecillion).
+beyond(16, quattuordecillion).
+beyond(17, quindecillion).
+beyond(18, sexdecillion).
+beyond(19, septendecillion).
+beyond(20, octodecillion).
+beyond(21, novemdecillion).
+beyond(22, vigintillion).
 
-digits_triplets_([], [], L, L) :- !.
-digits_triplets_([A], [[AN]], L0, L) :- !,
-  L is L0+3,
-  atom_number(A, AN).
-
-digits_triplets_([A,B], [[BN,AN]], L0, L) :- !,
-  L is L0+3,
-  maplist(atom_number, [A,B], [AN,BN]).
-
-digits_triplets_([A,B,C|Rest], [[CN,BN,AN]|Triplets], L0, L) :-
-  L1 is L0+3,
-  maplist(atom_number, [A,B,C], [AN,BN,CN]),
-  digits_triplets_(Rest, Triplets, L1, L).
 
