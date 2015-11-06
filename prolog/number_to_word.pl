@@ -19,12 +19,24 @@ term_expansion(beyond(N, Word), Rule) :-
   succ(N0, N),
   atom_concat(x_, N, Name),
   atom_concat(x_, N0, Name0),
-  Head =.. [Name, [W1,Word|W2]],
+  Head =.. [Name, Word0],
   Prev =.. [Name0, W2],
-  Rule = ( Head --> x(W1), { W1 \== [zero] }, call(Prev) ),
+  Rule = (  Head -->
+	    x(W1),
+	    call(Prev),
+	    {  W1 \== [zero]
+	    -> Word0 = [W1,Word|Rest],
+	       (  W2 == [zero]
+	       -> Rest = []
+	       ;  Rest = W2
+	       )
+	    ;  Word0 = W2
+	    }
+	 ),
   Gen =.. [Name, A, B, C],
   GenRule = ( gen(A,B,C) :- Gen ),
   assertz(GenRule).
+
 
 %% number_word(?Num, ?Word) is nondet.
 %
@@ -68,10 +80,17 @@ gen(Ws) --> x(Ws).
 gen(Ws) --> x_2(Ws).
 
 
-x_2([W1,thousand|W2]) -->
+x_2(Word) -->
   x(W1),
-  { W1 \== [zero] },
-  x(W2).
+  x(W2),
+  {  W1 \== [zero]
+  -> Word = [W1,thousand|Rest],
+     (  W2 == [zero]
+     -> Rest = []
+     ;  Rest = W2
+     )
+  ;  Word = W2
+  }.
 
 
 x([Word]) -->
