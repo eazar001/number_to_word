@@ -1,6 +1,6 @@
 
 :- module(number_to_word,
-     [ gen//1 ]).
+     [ number_word/2 ]).
 
 :- initialization compile_predicates([gen//1]).
 
@@ -21,6 +21,43 @@ term_expansion(beyond(N, Word), Rule) :-
   GenRule = ( gen(A,B,C) :- Gen ),
   assertz(GenRule).
 
+%% number_word(?Num, ?Word) is nondet.
+%
+%  True if Word is a (possibly) nested list of English words that represents
+%  the integer that Num is trying to represent.
+%  
+%  @arg Num is a flat list of integer digits that correspond to the number in
+%  each place of the entire number. A whole number _|must|_ be represented
+%  with a length that's a multiple of 3. For example, =|[0,0,3|= is correct,
+%  but =|[3]|= is not.
+%
+%  @arg Word is a list of English words correspond to an integer. Every number
+%  that represents a magnitude that increases by the order of 10^3, is encased
+%  in its own list.
+%
+%  In example,
+%  ==
+%  ?- number_word([5,5,2,0,1,2,0,0,6], Word).
+%  Word = [[five, hundred, fifty, two], million, [twelve], thousand, six]
+%
+%  ?- number_word([0,0,6], Word).
+%  Word = [six]
+%
+%  ?- number_word(Number, [[one], thousand, three, hundred, seventy, two]).
+%  Number = [0, 0, 1, 3, 7, 2]
+%
+%  ?- number_word(Number, [[one], thousand, X, hundred, seventy, two]).
+%  Number = [0, 0, 1, 1, 7, 2],
+%  X = one ;
+%  Number = [0, 0, 1, 2, 7, 2],
+%  X = two ;
+%  Number = [0, 0, 1, 3, 7, 2],
+%  X = three ;
+%  ... etc.
+%  ==
+
+number_word(Num, Word) :-
+  phrase(gen(Word), Num).
 
 gen(Ws) --> x(Ws).
 gen(Ws) --> x_2(Ws).
