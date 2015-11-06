@@ -21,7 +21,7 @@ term_expansion(beyond(N, Word), Rule) :-
   atom_concat(x_, N0, Name0),
   Head =.. [Name, [W1,Word|W2]],
   Prev =.. [Name0, W2],
-  Rule = ( Head --> x(W1), call(Prev) ),
+  Rule = ( Head --> x(W1), { W1 \== [zero] }, call(Prev) ),
   Gen =.. [Name, A, B, C],
   GenRule = ( gen(A,B,C) :- Gen ),
   assertz(GenRule).
@@ -70,6 +70,7 @@ gen(Ws) --> x_2(Ws).
 
 x_2([W1,thousand|W2]) -->
   x(W1),
+  { W1 \== [zero] },
   x(W2).
 
 
