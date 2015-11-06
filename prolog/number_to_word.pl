@@ -11,7 +11,6 @@
 
 
 term_expansion(beyond(N, Word), Rule) :-
-  dynamic(gen//1),
   succ(N0, N),
   atom_concat(x_, N, Name),
   atom_concat(x_, N0, Name0),
@@ -21,7 +20,6 @@ term_expansion(beyond(N, Word), Rule) :-
   Gen =.. [Name, A, B, C],
   GenRule = ( gen(A,B,C) :- Gen ),
   assertz(GenRule).
-
 
 
 gen(Ws) --> x(Ws).
