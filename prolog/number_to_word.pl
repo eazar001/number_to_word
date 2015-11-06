@@ -33,7 +33,7 @@ term_expansion(beyond(N, Word), Rule) :-
 %  
 %  @arg Num is a flat list of integer digits that correspond to the number in
 %  each place of the entire number. A whole number _|must|_ be represented
-%  with a length that's a multiple of 3. For example, =|[0,0,3|= is correct,
+%  with a length that's a multiple of 3. For example, =|[0,0,3]|= is correct,
 %  but =|[3]|= is not.
 %
 %  @arg Word is a list of English words correspond to an integer. Every number
