@@ -79,7 +79,7 @@ number_word(Num, Word) :-
   ;  term_variables(Word, [_|_])
   -> include(is_list, Word, Ws),
      length(Ws, N0),
-     N is N0*3+3, writeln(N),
+     N is N0*3+3,
      length(Num, N),
      phrase(gen(Word), Num)
   ;  once(phrase(gen(Word), Num))
