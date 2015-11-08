@@ -76,6 +76,12 @@ term_expansion(beyond(N, Word), Rule) :-
 number_word(Num, Word) :-
   (  nonvar(Num)
   -> phrase(gen(Word), Num)
+  ;  term_variables(Word, [_|_])
+  -> include(is_list, Word, Ws),
+     length(Ws, N0),
+     N is N0*3+3, writeln(N),
+     length(Num, N),
+     phrase(gen(Word), Num)
   ;  once(phrase(gen(Word), Num))
   ).
 
