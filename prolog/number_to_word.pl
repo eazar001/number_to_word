@@ -22,17 +22,17 @@ term_expansion(beyond(N, Word), Rule) :-
   Head =.. [Name, Word0],
   Prev =.. [Name0, W2],
   Rule = (  Head -->
-	      x(W1),
-	      call(Prev),
-	      {  W1 \== [zero]
-	      -> Word0 = [W1,Word|Rest],
-		 (  W2 == [zero]
-		 -> Rest = []
-		 ;  Rest = W2
-		 )
-	      ;  Word0 = W2
-	      }
-	 ),
+            x(W1),
+            call(Prev),
+            {  W1 \== [zero]
+               -> Word0 = [W1,Word|Rest],
+               (  W2 == [zero]
+               -> Rest = []
+               ;  Rest = W2
+               )
+               ;  Word0 = W2
+            }
+         ),
   Gen =.. [Name, A, B, C],
   GenRule = ( gen(A,B,C) :- Gen ),
   assertz(GenRule).
