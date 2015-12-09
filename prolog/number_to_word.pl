@@ -25,12 +25,12 @@ term_expansion(beyond(N, Word), Rule) :-
             x(W1),
             call(Prev),
             {  W1 \== [zero]
-               -> Word0 = [W1,Word|Rest],
+            -> Word0 = [W1,Word|Rest],
                (  W2 == [zero]
                -> Rest = []
                ;  Rest = W2
                )
-               ;  Word0 = W2
+            ;  Word0 = W2
             }
          ),
   Gen =.. [Name, A, B, C],
