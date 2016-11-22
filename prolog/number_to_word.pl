@@ -201,38 +201,43 @@ beyond(22, vigintillion).
 
 :- begin_tests(number_to_word).
 
+test_both_ground_inputs(Number, Word) :-
+    assertion(ground(Number)),
+    assertion(ground(Word)),
+    findall(Word, number_word(Number, Word), [Word]).
+
 test(singles) :-
-    number_word([0,0,0], [zero]),
-    number_word([0,0,1], [one]),
-    number_word([0,0,2], [two]),
-    number_word([0,0,3], [three]),
-    number_word([0,0,4], [four]),
-    number_word([0,0,5], [five]),
-    number_word([0,0,6], [six]),
-    number_word([0,0,7], [seven]),
-    number_word([0,0,8], [eight]),
-    number_word([0,0,9], [nine]).
+    test_both_ground_inputs([0,0,0], [zero]),
+    test_both_ground_inputs([0,0,1], [one]),
+    test_both_ground_inputs([0,0,2], [two]),
+    test_both_ground_inputs([0,0,3], [three]),
+    test_both_ground_inputs([0,0,4], [four]),
+    test_both_ground_inputs([0,0,5], [five]),
+    test_both_ground_inputs([0,0,6], [six]),
+    test_both_ground_inputs([0,0,7], [seven]),
+    test_both_ground_inputs([0,0,8], [eight]),
+    test_both_ground_inputs([0,0,9], [nine]).
 
 test(specials) :-
-    number_word([0,1,0], [ten]),
-    number_word([0,1,1], [eleven]),
-    number_word([0,1,2], [twelve]),
-    number_word([0,1,3], [thirteen]),
-    number_word([0,1,4], [fourteen]),
-    number_word([0,1,5], [fifteen]),
-    number_word([0,1,6], [sixteen]),
-    number_word([0,1,7], [seventeen]),
-    number_word([0,1,8], [eighteen]),
-    number_word([0,1,9], [nineteen]).
+    test_both_ground_inputs([0,1,0], [ten]),
+    test_both_ground_inputs([0,1,1], [eleven]),
+    test_both_ground_inputs([0,1,2], [twelve]),
+    test_both_ground_inputs([0,1,3], [thirteen]),
+    test_both_ground_inputs([0,1,4], [fourteen]),
+    test_both_ground_inputs([0,1,5], [fifteen]),
+    test_both_ground_inputs([0,1,6], [sixteen]),
+    test_both_ground_inputs([0,1,7], [seventeen]),
+    test_both_ground_inputs([0,1,8], [eighteen]),
+    test_both_ground_inputs([0,1,9], [nineteen]).
 
 test(tens) :-
-    number_word([0,2,0], [twenty]),
-    number_word([0,3,0], [thirty]),
-    number_word([0,4,0], [forty]),
-    number_word([0,5,0], [fifty]),
-    number_word([0,6,0], [sixty]),
-    number_word([0,7,0], [seventy]),
-    number_word([0,8,0], [eighty]),
-    number_word([0,9,0], [ninety]).
+    test_both_ground_inputs([0,2,0], [twenty]),
+    test_both_ground_inputs([0,3,0], [thirty]),
+    test_both_ground_inputs([0,4,0], [forty]),
+    test_both_ground_inputs([0,5,0], [fifty]),
+    test_both_ground_inputs([0,6,0], [sixty]),
+    test_both_ground_inputs([0,7,0], [seventy]),
+    test_both_ground_inputs([0,8,0], [eighty]),
+    test_both_ground_inputs([0,9,0], [ninety]).
 
 :- end_tests(number_to_word).
