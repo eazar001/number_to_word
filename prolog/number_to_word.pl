@@ -1,4 +1,3 @@
-
 :- module(number_to_word,
      [ number_word/2 ]).
 
@@ -22,16 +21,16 @@ term_expansion(beyond(N, Word), Rule) :-
   Head =.. [Name, Word0],
   Prev =.. [Name0, W2],
   Rule = (  Head -->
-            x(W1),
-            call(Prev),
-            {  W1 \== [zero]
-            -> Word0 = [W1,Word|Rest],
-               (  W2 == [zero]
-               -> Rest = []
-               ;  Rest = W2
-               )
-            ;  Word0 = W2
-            }
+                x(W1),
+                call(Prev),
+                {  W1 \== [zero]
+                -> Word0 = [W1,Word|Rest],
+                   (  W2 == [zero]
+                   -> Rest = []
+                   ;  Rest = W2
+                   )
+                ;  Word0 = W2
+                }
          ),
   Gen =.. [Name, A, B, C],
   GenRule = ( gen(A,B,C) :- Gen ),
@@ -42,7 +41,7 @@ term_expansion(beyond(N, Word), Rule) :-
 %
 %  True if Word is a (possibly) nested list of English words that represents
 %  the integer that Num is trying to represent.
-%  
+%
 %  @arg Num is a flat list of integer digits that correspond to the number in
 %  each place of the entire number. A whole number _|must|_ be represented
 %  with a length that's a multiple of 3. For example, =|[0,0,3]|= is correct,
@@ -74,16 +73,16 @@ term_expansion(beyond(N, Word), Rule) :-
 %  ==
 
 number_word(Num, Word) :-
-  (  nonvar(Num)
-  -> phrase(gen(Word), Num)
-  ;  term_variables(Word, [_|_])
-  -> include(is_list, Word, Ws),
-     length(Ws, N0),
-     N is N0*3+3,
-     length(Num, N),
-     phrase(gen(Word), Num)
-  ;  once(phrase(gen(Word), Num))
-  ).
+    (  nonvar(Num)
+    -> phrase(gen(Word), Num)
+    ;  term_variables(Word, [_|_])
+    -> include(is_list, Word, Ws),
+       length(Ws, N0),
+       N is N0*3+3,
+       length(Num, N),
+       phrase(gen(Word), Num)
+    ;  once(phrase(gen(Word), Num))
+    ).
 
 
 gen(Ws) --> x(Ws).
@@ -91,57 +90,57 @@ gen(Ws) --> x_2(Ws).
 
 
 x_2(Word) -->
-  x(W1),
-  x(W2),
-  {  W1 \== [zero]
-  -> Word = [W1,thousand|Rest],
-     (  W2 == [zero]
-     -> Rest = []
-     ;  Rest = W2
-     )
-  ;  Word = W2
-  }.
-
-
-x([Word]) -->
-  dig(zero),
-  dig(zero),
-  dig(Word).
-
-x([Word]) -->
-  dig(zero),
-  special(Word).
-
-x(Word) -->
-  dig(zero),
-  ten(W1),
-  dig(W2),
-  {  W2 == zero
-  -> Word = [W1]
-  ;  Word = [W1,W2]
-  }.
-
-x(Word) -->
-  dig(W1),
-  { W1 \== zero },
-  % Second digit is either single digit or special number
-  (  (  dig(zero),
-        dig(W2)
-     ;  special(W2)
-     ),
-     {  W2 == zero
-     -> Word = [W1,hundred]
-     ;  Word = [W1,hundred,W2]
-     }
-  ;  ten(W2),
-     dig(W3),
-     { W2 \== zero,
-       (  W3 == zero
-       -> Word = [W1,hundred,W2]
-       ;  Word = [W1,hundred,W2,W3]
+    x(W1),
+    x(W2),
+    {  W1 \== [zero]
+    -> Word = [W1,thousand|Rest],
+       (  W2 == [zero]
+       -> Rest = []
+       ;  Rest = W2
        )
-     }
-  ).
+    ;  Word = W2
+    }.
+
+
+x([Word]) -->
+    dig(zero),
+    dig(zero),
+    dig(Word).
+
+x([Word]) -->
+    dig(zero),
+    special(Word).
+
+x(Word) -->
+    dig(zero),
+    ten(W1),
+    dig(W2),
+    {  W2 == zero
+    -> Word = [W1]
+    ;  Word = [W1,W2]
+    }.
+
+x(Word) -->
+    dig(W1),
+    { W1 \== zero },
+    % Second digit is either single digit or special number
+    (  (  dig(zero),
+          dig(W2)
+       ;  special(W2)
+       ),
+       {  W2 == zero
+       -> Word = [W1,hundred]
+       ;  Word = [W1,hundred,W2]
+       }
+    ;  ten(W2),
+       dig(W3),
+       { W2 \== zero,
+         (  W3 == zero
+         -> Word = [W1,hundred,W2]
+         ;  Word = [W1,hundred,W2,W3]
+         )
+       }
+    ).
 
 
 dig(zero) --> [0].
@@ -200,3 +199,30 @@ beyond(21, novemdecillion).
 beyond(22, vigintillion).
 
 
+:- begin_tests(number_to_word).
+
+test(singles) :-
+    number_word([0,0,0], [zero]),
+    number_word([0,0,1], [one]),
+    number_word([0,0,2], [two]),
+    number_word([0,0,3], [three]),
+    number_word([0,0,4], [four]),
+    number_word([0,0,5], [five]),
+    number_word([0,0,6], [six]),
+    number_word([0,0,7], [seven]),
+    number_word([0,0,8], [eight]),
+    number_word([0,0,9], [nine]).
+
+test(specials) :-
+    number_word([0,1,0], [ten]),
+    number_word([0,1,1], [eleven]),
+    number_word([0,1,2], [twelve]),
+    number_word([0,1,3], [thirteen]),
+    number_word([0,1,4], [fourteen]),
+    number_word([0,1,5], [fifteen]),
+    number_word([0,1,6], [sixteen]),
+    number_word([0,1,7], [seventeen]),
+    number_word([0,1,8], [eighteen]),
+    number_word([0,1,9], [nineteen]).
+
+:- end_tests(number_to_word).
