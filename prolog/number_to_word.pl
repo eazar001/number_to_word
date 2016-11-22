@@ -225,4 +225,14 @@ test(specials) :-
     number_word([0,1,8], [eighteen]),
     number_word([0,1,9], [nineteen]).
 
+test(tens) :-
+    number_word([0,2,0], [twenty]),
+    number_word([0,3,0], [thirty]),
+    number_word([0,4,0], [forty]),
+    number_word([0,5,0], [fifty]),
+    number_word([0,6,0], [sixty]),
+    number_word([0,7,0], [seventy]),
+    number_word([0,8,0], [eighty]),
+    number_word([0,9,0], [ninety]).
+
 :- end_tests(number_to_word).
