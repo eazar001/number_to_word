@@ -204,7 +204,8 @@ beyond(22, vigintillion).
 test_both_ground_inputs(Number, Word) :-
     assertion(ground(Number)),
     assertion(ground(Word)),
-    findall(Word, number_word(Number, Word), [Word]).
+    assertion(\+ ground(W)),
+    findall(W, number_word(Number, W), [Word]).
 
 test(singles) :-
     test_both_ground_inputs([0,0,0], [zero]),
