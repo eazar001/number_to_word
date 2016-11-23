@@ -15,26 +15,26 @@ Small utility pack for converting integers to English words.
 */
 
 term_expansion(beyond(N, Word), Rule) :-
-  succ(N0, N),
-  atom_concat(x_, N, Name),
-  atom_concat(x_, N0, Name0),
-  Head =.. [Name, Word0],
-  Prev =.. [Name0, W2],
-  Rule = (  Head -->
-                x(W1),
-                call(Prev),
-                {  W1 \== [zero]
-                -> Word0 = [W1,Word|Rest],
-                   (  W2 == [zero]
-                   -> Rest = []
-                   ;  Rest = W2
-                   )
-                ;  Word0 = W2
-                }
-         ),
-  Gen =.. [Name, A, B, C],
-  GenRule = ( gen(A,B,C) :- Gen ),
-  assertz(GenRule).
+    succ(N0, N),
+    atom_concat(x_, N, Name),
+    atom_concat(x_, N0, Name0),
+    Head =.. [Name, Word0],
+    Prev =.. [Name0, W2],
+    Rule = (  Head -->
+                  x(W1),
+                  call(Prev),
+                  {  W1 \== [zero]
+                  -> Word0 = [W1,Word|Rest],
+                     (  W2 == [zero]
+                     -> Rest = []
+                     ;  Rest = W2
+                     )
+                  ;  Word0 = W2
+                  }
+           ),
+    Gen =.. [Name, A, B, C],
+    GenRule = ( gen(A,B,C) :- Gen ),
+    assertz(GenRule).
 
 
 %% number_word(?Num, ?Word) is nondet.
