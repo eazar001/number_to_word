@@ -201,44 +201,47 @@ beyond(22, vigintillion).
 
 :- begin_tests(number_to_word).
 
-test_both_ground_inputs(Number, Word) :-
+test_number(Number, Word) :-
     assertion(ground(Number)),
     assertion(ground(Word)),
-    assertion(\+ ground(W)),
-    findall(W, number_word(Number, W), [Word]).
+    assertion(var(W)),
+    assertion(var(N)),
+    % Test the forward mode
+    assertion(findall(W, number_word(Number, W), [Word])),
+    % Test the backward mode
+    assertion(findall(W, number_word(N, Word), [Number])),
+    % Test both inputs ground
+    assertion(findall(one_solution, number_word(Number, Word), [one_solution])).
+
+singles([zero,one,two,three,four,five,six,seven,eight,nine]).
+specials([ten,eleven,twelve,thirteen,fourteen,fifteen,sixteen,seventeen,eighteen,nineteen]).
+tens([twenty,thirty,forty,fifty,sixty,seventy,eighty,ninety]).
+
+:- use_module(library(dcg/basics)).
+:- use_module(library(solution_sequences)).
+
+generator --> eos.
+generator -->
+    { between(0, 9, N) },
+    [N],
+    generator.
 
 test(singles) :-
-    test_both_ground_inputs([0,0,0], [zero]),
-    test_both_ground_inputs([0,0,1], [one]),
-    test_both_ground_inputs([0,0,2], [two]),
-    test_both_ground_inputs([0,0,3], [three]),
-    test_both_ground_inputs([0,0,4], [four]),
-    test_both_ground_inputs([0,0,5], [five]),
-    test_both_ground_inputs([0,0,6], [six]),
-    test_both_ground_inputs([0,0,7], [seven]),
-    test_both_ground_inputs([0,0,8], [eight]),
-    test_both_ground_inputs([0,0,9], [nine]).
+    Digit = [0,0,_],
+    findall([S], ( singles(Ss), member(S, Ss) ), Singles),
+    findall(Digit, phrase(generator, Digit), Digits),
+    assertion(maplist(test_number, Digits, Singles)).
 
 test(specials) :-
-    test_both_ground_inputs([0,1,0], [ten]),
-    test_both_ground_inputs([0,1,1], [eleven]),
-    test_both_ground_inputs([0,1,2], [twelve]),
-    test_both_ground_inputs([0,1,3], [thirteen]),
-    test_both_ground_inputs([0,1,4], [fourteen]),
-    test_both_ground_inputs([0,1,5], [fifteen]),
-    test_both_ground_inputs([0,1,6], [sixteen]),
-    test_both_ground_inputs([0,1,7], [seventeen]),
-    test_both_ground_inputs([0,1,8], [eighteen]),
-    test_both_ground_inputs([0,1,9], [nineteen]).
+    Digit = [0,Second,_],
+    findall([S], ( specials(Ss), member(S, Ss) ), Specials),
+    findall(Digit, ( limit(10, ( phrase(generator, Digit), Second > 0) ) ), Digits),
+    assertion(maplist(test_number, Digits, Specials)).
 
 test(tens) :-
-    test_both_ground_inputs([0,2,0], [twenty]),
-    test_both_ground_inputs([0,3,0], [thirty]),
-    test_both_ground_inputs([0,4,0], [forty]),
-    test_both_ground_inputs([0,5,0], [fifty]),
-    test_both_ground_inputs([0,6,0], [sixty]),
-    test_both_ground_inputs([0,7,0], [seventy]),
-    test_both_ground_inputs([0,8,0], [eighty]),
-    test_both_ground_inputs([0,9,0], [ninety]).
+    Digit = [0,Second,0],
+    findall([T], ( tens(Ts), member(T, Ts) ), Tens),
+    findall(Digit, ( phrase(generator, Digit), Second > 1 ), Digits),
+    assertion(maplist(test_number, Digits, Tens)).
 
 :- end_tests(number_to_word).
