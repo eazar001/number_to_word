@@ -244,4 +244,60 @@ test(tens) :-
     findall(Digit, ( phrase(generator, Digit), Second > 1 ), Digits),
     assertion(maplist(test_number, Digits, Tens)).
 
+% one hundred
+test(one_hundred, [all(Forward == [[one,hundred]])]) :-
+    number_word([1,0,0], Forward).
+
+test(one_hundred_backward, [all(Backward == [[1,0,0]])]) :-
+    number_word(Backward, [one,hundred]).
+
+test(one_hundred_wrong_input, [fail]) :-
+    number_word([2,0,0], [one,hundred]).
+
+% one thousand
+test(one_thousand, [all(Forward == [[[one],thousand]])]) :-
+    number_word([0,0,1,0,0,0], Forward).
+
+test(one_thousand_backward, [all(Backward == [[0,0,1,0,0,0]])]) :-
+    number_word(Backward, [[one],thousand]).
+
+test(one_thousand_wrong_input, [fail]) :-
+    number_word([1,0,0,0], [[one],thousand]).
+
+% one thousand, nine hundred, forty two
+test(one_thousand_nine_hundred_forty_two,
+  [all(Forward == [[[one],thousand,nine,hundred,forty,two]])]) :-
+
+    number_word([0,0,1,9,4,2], Forward).
+
+test(one_thousand_nine_hundred_forty_two_backward, [all(Backward == [[0,0,1,9,4,2]])]) :-
+    number_word(Backward, [[one],thousand,nine,hundred,forty,two]).
+
+test(one_thousand_nine_hundred_forty_two_wrong_input, [fail]) :-
+    number_word([1,9,4,2], [[one],thousand,nine,hundred,forty,two]).
+
+
+% twelve quadrillion, 4 billion, six hundred forty two thousand, nine
+test(big_number_forward,
+  [all(Forward == [[[twelve],quadrillion,[four],billion,[six,hundred,forty,two],thousand,nine]])]) :-
+
+    number_word([0,1,2,0,0,0,0,0,4,0,0,0,6,4,2,0,0,9], Forward).
+
+test(big_number_backward, [ all(Backward == [[0,1,2,0,0,0,0,0,4,0,0,0,6,4,2,0,0,9]])
+                           ,blocked('this is currently too slow to test')]) :-
+    number_word(Backward,
+      [[twelve],quadrillion,[four],billion,[six,hundred,forty,two],thousand,nine]).
+
+test(big_number_wrong_input, [fail]) :-
+    number_word([0,0,0],
+      [[twelve],quadrillion,[four],billion,[six,hundred,forty,two],thousand,nine]).
+
+% nondet 0 to 9
+test(nondet_singles,
+  [all(Word == [[zero],[one],[two],[three],[four],[five],[six],[seven],[eight],[nine]])]) :-
+
+    assertion(maplist(var, [Digit,Word])),
+    Digit = [0,0,_],
+    number_word(Digit, Word).
+
 :- end_tests(number_to_word).
